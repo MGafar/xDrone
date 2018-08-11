@@ -4,7 +4,7 @@
 package ic.ac.uk.xdrone.tests
 
 import com.google.inject.Inject
-import ic.ac.uk.xdrone.xDrone.Model
+import ic.ac.uk.xdrone.xDrone.Program
 import org.eclipse.xtext.testing.InjectWith
 import org.eclipse.xtext.testing.XtextRunner
 import org.eclipse.xtext.testing.util.ParseHelper
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 @InjectWith(XDroneInjectorProvider)
 class XDroneParsingTest {
 	@Inject
-	ParseHelper<Model> parseHelper
+	ParseHelper<Program> parseHelper
 	
 	@Test
 	def void loadModel() {

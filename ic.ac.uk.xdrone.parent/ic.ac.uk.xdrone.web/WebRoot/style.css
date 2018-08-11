@@ -41,7 +41,18 @@ a:hover {
 	top: 90px;
 	bottom: 0;
 	left: 0;
-	width: 640px;
+	width: 50%;
+}
+
+div.button-wrapper {
+	display: block;
+	position: absolute;
+	top: 90px;
+	bottom: 40%;
+	left: 50%;
+	right: 0;
+	padding: 4px;
+	border: 1px solid #aaa;
 }
 
 #xtext-editor {
@@ -52,5 +63,17 @@ a:hover {
 	left: 0;
 	right: 0;
 	padding: 4px;
+	border: 1px solid #aaa;
+}
+
+div.gallery {
+	display: block;
+	position: absolute;
+	top: 60%;
+	bottom: 0;
+	left: 50%;
+	right: 0;
+	padding: 4px;
+	overflow: scroll;
 	border: 1px solid #aaa;
 }

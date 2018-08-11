@@ -2,8 +2,66 @@ grammar ic.ac.uk.xdrone.XDrone with org.eclipse.xtext.common.Terminals
 
 generate xDrone "http://www.ac.ic/uk/xdrone/XDrone"
 
-Model:
-	greetings+=Greeting*;
-	
-Greeting:
-	'Hello' name=ID '!';
+import "http://www.eclipse.org/xtext/xbase/Xbase"
+ 
+Program :
+  main = Main
+;
+  
+ 
+Main :
+  'xdrone' name = ID
+  'begin' 
+  (commands+=Command ';'?)*
+  'end'
+; 
+
+Command:
+	  {Command} Takeoff
+	| {Command} Land
+	| Up 
+	| Down 
+	| Left 
+	| Right 
+	| Forward 
+	| Backward
+	| RotateL
+	| RotateR
+	| Wait
+	| Snapshot
+;
+
+Takeoff: 'TAKEOFF';
+Land : 'LAND';
+
+ 
+Snapshot:
+	'SNAPSHOT' '('image_name = ID')'
+;
+Up: 
+	'UP' '('milliseconds = INT')'
+;
+Down: 
+	'DOWN' '('milliseconds = INT')'
+;
+Left: 
+	'LEFT' '('milliseconds = INT')'
+;
+Right: 
+	'RIGHT' '('milliseconds = INT')'
+;
+Forward: 
+	'FORWARD' '('milliseconds = INT')'
+;
+Backward: 
+	'BACKWARD' '('milliseconds = INT')'
+;
+RotateL: 
+	'ROTATELEFT' '('milliseconds = INT')'
+;
+RotateR: 
+	'ROTATERIGHT' '('milliseconds = INT')'
+;
+Wait:
+	'WAIT' '(' milliseconds = INT ')'
+;
