@@ -1,0 +1,9 @@
+grammar ic.ac.uk.xdrone.XDrone with org.eclipse.xtext.common.Terminals
+
+generate xDrone "http://www.ac.ic/uk/xdrone/XDrone"
+
+Model:
+	greetings+=Greeting*;
+	
+Greeting:
+	'Hello' name=ID '!';
