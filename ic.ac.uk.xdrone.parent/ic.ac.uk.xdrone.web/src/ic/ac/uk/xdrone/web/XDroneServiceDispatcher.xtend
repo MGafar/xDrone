@@ -76,10 +76,12 @@ class XDroneServiceDispatcher extends XtextServiceDispatcher {
 								writer.close()
 						}
 						val document = getResourceDocument(resourceId, context)
-						println("preparing to run command: /xdrone/xdrone-emergencystop.sh")
+						
+						println("preparing to run command: /bin/bash -c /xdrone-emergencyland.sh "+file.getAbsolutePath()+" > /tmp/xdrone.log")
 						
 						val pb = new ProcessBuilder().inheritIO()
-						.command("/xdrone/xdrone-emergencystop.sh").start();
+						.command("/bin/bash", "-c", System.getProperty("user.dir") + "/xdrone-emergencyland.sh" + " > /tmp/xdrone.log").start();
+						
 						
 						if (!pb.alive){
 							println("exit code: "+pb.exitValue)

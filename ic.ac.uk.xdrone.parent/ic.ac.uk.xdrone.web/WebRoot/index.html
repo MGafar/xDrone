@@ -63,6 +63,18 @@
  						e.preventDefault();
  					});
  					
+ 					$('#land-button').bind("click", function(e){
+ 						var data = {
+ 							resource : editor.xtextServices.options.resourceId,
+ 							fullText : editor.getValue()
+ 						};	
+ 						console.log(data);					
+ 						$.post(baseUrl+'xtext-service/emergencystop?resource='+editor.xtextServices.options.resourceId, data, function(result){
+ 							console.log("Emergency Land!");
+ 						}); 
+ 						e.preventDefault();
+ 					});
+ 					
  					
 /*  					GalleryGenerator = function(){
  						var data = {
@@ -96,6 +108,7 @@
 	<div class="button-wrapper">
 		<button id="generate-button" value="Generate" title="Generate">Generate</button>
 		<button id="deploy-button" value="Deploy" title="Deploy">Deploy</button>
+		<button id="land-button" value="Emergency Land" title="Emergency Land">Emergency Land</button>
 		<div id="generated-code">
 		</div>
 	</div>

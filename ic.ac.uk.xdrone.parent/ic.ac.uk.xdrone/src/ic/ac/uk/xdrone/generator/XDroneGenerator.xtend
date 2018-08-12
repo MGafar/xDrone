@@ -27,7 +27,7 @@ import ic.ac.uk.xdrone.xDrone.Snapshot
 class XDroneGenerator extends AbstractGenerator {
 
 	def compile(Main main)'''
-		var arDrone = require('/usr/local/lib/node_modules/ar-drone'); 
+		var arDrone = require('/usr/lib/node_modules/ar-drone'); 
 		var http    = require('http');
 		var fs		= require('fs');
 		
@@ -35,9 +35,7 @@ class XDroneGenerator extends AbstractGenerator {
 		option.imageSize = "1280x720";
 		var client = arDrone.createClient(option);
 		var pngStream = client.getPngStream();
-		
-		client.takeoff();
-		
+				
 		var lastPng;
 		pngStream
 		  .on('error', console.log)
@@ -45,13 +43,19 @@ class XDroneGenerator extends AbstractGenerator {
 		    lastPng = pngBuffer;
 		  });
 		  
+		«FOR to : main.takeoff»  
+			client.takeoff();
+		«ENDFOR»
+		  
 		client
 		  .after(5000, function() {
 		«FOR f : main.commands» 
 			«f.compile»
 		«ENDFOR»
-		   this.stop();
-		   this.land();
+		«FOR ln : main.land»  
+				this.stop();
+				this.land();
+		«ENDFOR»
 		  }).after(5000, function () {
 		  	process.exit(0);
 		  });

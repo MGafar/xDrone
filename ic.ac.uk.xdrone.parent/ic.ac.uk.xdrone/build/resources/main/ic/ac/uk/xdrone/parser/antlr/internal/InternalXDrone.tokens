@@ -1,6 +1,6 @@
 '('=18
 ')'=19
-';'=13
+';'=12
 'BACKWARD'=25
 'DOWN'=21
 'FORWARD'=24
@@ -13,7 +13,7 @@
 'TAKEOFF'=15
 'UP'=20
 'WAIT'=28
-'begin'=12
+'begin'=13
 'end'=14
 'xdrone'=11
 RULE_ANY_OTHER=10

@@ -8,18 +8,20 @@ Program :
   main = Main
 ;
   
- 
 Main :
   'xdrone' name = ID
+  (takeoff+=Takeoff';'?)?
   'begin' 
   (commands+=Command ';'?)*
   'end'
-; 
+  (land+=Land';'?)?
+;
+
+Takeoff: 'TAKEOFF';
+Land : 'LAND';
 
 Command:
-	  {Command} Takeoff
-	| {Command} Land
-	| Up 
+	Up 
 	| Down 
 	| Left 
 	| Right 
@@ -31,10 +33,6 @@ Command:
 	| Snapshot
 ;
 
-Takeoff: 'TAKEOFF';
-Land : 'LAND';
-
- 
 Snapshot:
 	'SNAPSHOT' '('image_name = ID')'
 ;
