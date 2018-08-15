@@ -10,11 +10,29 @@ Program :
   
 Main :
   'xdrone' name = ID
+
   (takeoff+=Takeoff';'?)?
   'begin' 
   (commands+=Command ';'?)*
   'end'
   (land+=Land';'?)?
+  
+  ('global_conditional' '(' (featurematch+=Conditional | facedetect+=FaceDetect) ')' 
+  	'{'
+  		(conditional_commands+=Command';'?)*
+  		(conditional_land+=Land';'?)?
+  	'}'
+  )?
+;
+
+Conditional:
+	FeatureMatch
+;
+
+FaceDetect: 'FACEDETECT';
+
+FeatureMatch:
+	'FEATUREMATCH' '('image_name = ID')'
 ;
 
 Takeoff: 'TAKEOFF';

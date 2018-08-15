@@ -28,12 +28,16 @@ class XDroneGenerator extends AbstractGenerator {
 
 	def compile(Main main)'''
 		var arDrone = require('/usr/lib/node_modules/ar-drone'); 
+		var cv	    = require('/usr/lib/node_modules/opencv');
 		var http    = require('http');
 		var fs		= require('fs');
+		var face_cascade = new cv.CascadeClassifier('/usr/lib/node_modules/opencv/data/haarcascade_frontalface_alt2.xml');
 		
-		var option = new Object();
-		option.imageSize = "1280x720";
-		var client = arDrone.createClient(option);
+		
+		//var option = new Object();
+		//option.imageSize = "1280x720";
+		//var client = arDrone.createClient(option);
+		var client = arDrone.createClient();
 		var pngStream = client.getPngStream();
 				
 		var lastPng;
@@ -43,26 +47,96 @@ class XDroneGenerator extends AbstractGenerator {
 		    lastPng = pngBuffer;
 		  });
 		  
+		var detected_face = Boolean(false);
+		var using_conditional = Boolean(false);
+		var count = 0;
+		
+		«FOR fm : main.facedetect»
+			using_conditional = Boolean(true);
+			var run = setTimeout(detectFaces, 5000);
+		«ENDFOR»
+		
+		function detectFaces()
+		{
+			cv.readImage(lastPng, function(err, im) 
+			{
+				im.resize(160, 90);
+		
+				var detectedFace = face_cascade.detectMultiScale(im, function(err, faces) 
+				{
+					if(faces.length)
+					{
+						count++;
+						//console.log('Incrementing count');
+						if(count == 3)
+						{
+							console.log('Face Detected');		
+							clearTimeout(run);
+							detected_face = Boolean(true);
+							do_this_last();				
+						}
+					}
+					else
+					{
+						count = 0;
+						console.log ('No faces Detected');
+					}
+				});	
+			});
+		
+			run = setTimeout(detectFaces, 200);
+		}
+		
+		function do_this_last()
+		{
+			//var detected_face = Boolean(false);
+			
+			client
+			  .after(500, function() {
+			
+			«FOR cc : main.conditional_commands» 
+						«cc.compile»
+			«ENDFOR»
+			
+			«FOR cl : main.conditional_land»  
+					this.stop();
+					this.land();
+					}).after(5000, function () {
+			«ENDFOR»
+			
+			console.log('Finished!');
+			process.exit(0);
+			
+			});
+		}
+		
+		  
 		«FOR to : main.takeoff»  
 			client.takeoff();
 		«ENDFOR»
 		  
 		client
 		  .after(5000, function() {
-		«FOR f : main.commands» 
+		«FOR f : main.commands»
+				if (detected_face) return;
 			«f.compile»
 		«ENDFOR»
 		«FOR ln : main.land»  
 				this.stop();
 				this.land();
+			  }).after(5000, function () {
+			  	process.exit(0);
 		«ENDFOR»
 		  }).after(5000, function () {
-		  	process.exit(0);
+		  	if (using_conditional) return;
+		  		process.exit(0);
 		  });
 	'''
 	def compile(Command cmd) '''
 		«IF cmd instanceof Snapshot »
 	    	fs.writeFile('WebRoot/images/«cmd.image_name».png', lastPng, (err) => {});
+	    	})
+	    	.after(1000, function() {
 	  	«ENDIF»
 		«IF cmd instanceof Up »
 		    this.stop();

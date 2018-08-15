@@ -132,14 +132,14 @@
 		function gallery_poll(){
 			if(document.getElementById('myModal').style.display != "block"){
 				ifHasChanged("html/lightbox.html", function(nModif, nVisit){
+					//console.log("HTML HAS CHANGED!");
+					result = false;
 					$("#gallery").load("html/lightbox.html");
-					console.log("HTML HAS CHANGED!");
-					result = true;
 				});	
 			}
 		};
 		
-		exponentialBackoff(gallery_poll, 5, 5000);	
+		exponentialBackoff(gallery_poll, 20, 500);	
 		
 		/* Reference this code - NOT MINE DON'T FORGET - */
 		function getHeaderTime () {
@@ -160,6 +160,7 @@
 		}
 		
 		function exponentialBackoff(toTry, max, delay) {
+			//console.log('Running!');
 		    toTry();
 		    
 		    if (result) {
@@ -167,7 +168,7 @@
 		    } else {
 		        if (max > 0) {
 		            setTimeout(function() {
-		                exponentialBackoff(toTry, --max, delay * 2);
+		                exponentialBackoff(toTry, --max, delay * 1.25);
 		            }, delay);
 		        }
 		    }

@@ -19,10 +19,8 @@ pngStream
   });
   
 var detected_face = Boolean(false);
-var using_conditional = Boolean(false);
 var count = 0;
 
-using_conditional = Boolean(true);
 var run = setTimeout(detectFaces, 5000);
 
 function detectFaces()
@@ -61,29 +59,24 @@ function do_this_last()
 	//var detected_face = Boolean(false);
 	
 	client
-	  .after(500, function() {
+	  .after(2000, function() {
 	
-	fs.writeFile('WebRoot/images/onair2.png', lastPng, (err) => {});
-	})
-	.after(1000, function() {
+		fs.writeFile('WebRoot/images/detectiontest2.png', lastPng, (err) => {});
 	
-	this.stop();
-	this.land();
-	}).after(5000, function () {
 	
-	console.log('Finished!');
-	process.exit(0);
+	}).after(2000, function() {
+	
+		console.log('Finished!');
+		process.exit(0);
 	
 	});
 }
 
+
+
   
-client.takeoff();
   
 client
   .after(5000, function() {
-  }).after(5000, function () {
-  	if (using_conditional) return;
-  		process.exit(0);
   });
 
