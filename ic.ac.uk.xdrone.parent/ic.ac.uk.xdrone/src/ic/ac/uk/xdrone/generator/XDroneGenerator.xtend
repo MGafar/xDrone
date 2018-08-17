@@ -149,6 +149,8 @@ class XDroneGenerator extends AbstractGenerator {
 		
 		function do_this_last()
 		{
+			client.stop();
+			
 			var p2 = new Promise((resolve, reject) => {
 				return resolve();
 			})			
