@@ -9,6 +9,11 @@ var face_cascade = new cv.CascadeClassifier('/usr/lib/node_modules/opencv/data/h
 //option.imageSize = "1280x720";
 //var client = arDrone.createClient(option);
 var client = arDrone.createClient();
+
+
+client.config('video:video_channel', 0);
+
+
 var pngStream = client.getPngStream();
 		
 var lastPng;
@@ -63,13 +68,10 @@ function do_this_last()
 	client
 	  .after(500, function() {
 	
-	fs.writeFile('WebRoot/images/onair2.png', lastPng, (err) => {});
+	fs.writeFile('WebRoot/images/usertesting3.png', lastPng, (err) => {});
 	})
 	.after(1000, function() {
 	
-	this.stop();
-	this.land();
-	}).after(5000, function () {
 	
 	console.log('Finished!');
 	process.exit(0);
@@ -78,7 +80,6 @@ function do_this_last()
 }
 
   
-client.takeoff();
   
 client
   .after(5000, function() {

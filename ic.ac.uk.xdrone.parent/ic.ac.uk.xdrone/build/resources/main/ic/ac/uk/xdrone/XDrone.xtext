@@ -11,16 +11,16 @@ Program :
 Main :
   'xdrone' name = ID
 
-  (takeoff+=Takeoff';'?)?
-  'begin' 
+  'begin'
+  (commands+=Snapshot';'?)?
+  ((takeoff+=Takeoff';'?)
   (commands+=Command ';'?)*
+  (land+=Land';'?))?
   'end'
-  (land+=Land';'?)?
   
   ('global_conditional' '(' (featurematch+=Conditional | facedetect+=FaceDetect) ')' 
   	'{'
   		(conditional_commands+=Command';'?)*
-  		(conditional_land+=Land';'?)?
   	'}'
   )?
 ;

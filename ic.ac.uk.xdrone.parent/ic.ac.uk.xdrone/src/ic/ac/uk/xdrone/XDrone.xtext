@@ -10,24 +10,24 @@ Program :
   
 Main :
   'xdrone' name = ID
-
-  (takeoff+=Takeoff';'?)?
-  'begin' 
-  (commands+=Command ';'?)*
-  'end'
-  (land+=Land';'?)?
   
-  ('global_conditional' '(' (featurematch+=Conditional | facedetect+=FaceDetect) ')' 
+  (downwardcamera+=DownwardCamera';'?)?
+
+  'begin'
+  (commands+=Snapshot';'?)?
+  ((takeoff+=Takeoff';'?)
+  (commands+=Command ';'?)*
+  (land+=Land';'?))?
+  'end'
+  
+  ('global_conditional' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
   	'{'
   		(conditional_commands+=Command';'?)*
-  		(conditional_land+=Land';'?)?
   	'}'
   )?
 ;
 
-Conditional:
-	FeatureMatch
-;
+DownwardCamera: 'USEDOWNWARDCAMERA';
 
 FaceDetect: 'FACEDETECT';
 

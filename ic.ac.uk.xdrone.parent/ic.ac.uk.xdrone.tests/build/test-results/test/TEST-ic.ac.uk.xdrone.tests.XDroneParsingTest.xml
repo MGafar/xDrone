@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ic.ac.uk.xdrone.tests.XDroneParsingTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-08-11T16:51:34" hostname="muhamad-S550CM" time="0.22">
+<testsuite name="ic.ac.uk.xdrone.tests.XDroneParsingTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-08-15T16:06:46" hostname="muhamad-S550CM" time="0.198">
   <properties/>
-  <testcase name="loadModel" classname="ic.ac.uk.xdrone.tests.XDroneParsingTest" time="0.22"/>
+  <testcase name="loadModel" classname="ic.ac.uk.xdrone.tests.XDroneParsingTest" time="0.198"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

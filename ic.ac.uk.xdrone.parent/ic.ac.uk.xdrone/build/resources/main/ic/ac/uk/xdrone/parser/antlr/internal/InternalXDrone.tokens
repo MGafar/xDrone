@@ -1,6 +1,6 @@
 '('=16
 ')'=17
-';'=12
+';'=13
 'BACKWARD'=30
 'DOWN'=26
 'FACEDETECT'=20
@@ -15,7 +15,7 @@
 'TAKEOFF'=22
 'UP'=25
 'WAIT'=33
-'begin'=13
+'begin'=12
 'end'=14
 'global_conditional'=15
 'xdrone'=11

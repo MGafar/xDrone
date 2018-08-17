@@ -32,12 +32,20 @@ class XDroneGenerator extends AbstractGenerator {
 		var http    = require('http');
 		var fs		= require('fs');
 		var face_cascade = new cv.CascadeClassifier('/usr/lib/node_modules/opencv/data/haarcascade_frontalface_alt2.xml');
-		
+		var promise	    = require('/usr/lib/node_modules/promise');
 		
 		//var option = new Object();
 		//option.imageSize = "1280x720";
 		//var client = arDrone.createClient(option);
 		var client = arDrone.createClient();
+		
+		
+		client.config('video:video_channel', 0);
+		
+		«FOR dc : main.downwardcamera»
+		client.config('video:video_channel', 3);
+		«ENDFOR»
+		
 		var pngStream = client.getPngStream();
 				
 		var lastPng;
@@ -48,12 +56,18 @@ class XDroneGenerator extends AbstractGenerator {
 		  });
 		  
 		var detected_face = Boolean(false);
+		var feature_matched = Boolean(false);
 		var using_conditional = Boolean(false);
 		var count = 0;
 		
 		«FOR fm : main.facedetect»
 			using_conditional = Boolean(true);
 			var run = setTimeout(detectFaces, 5000);
+		«ENDFOR»
+		
+		«FOR fm : main.featurematch»
+			using_conditional = Boolean(true);
+			var run = setTimeout(imageSimilarity, 5000);
 		«ENDFOR»
 		
 		function detectFaces()
@@ -87,109 +101,177 @@ class XDroneGenerator extends AbstractGenerator {
 			run = setTimeout(detectFaces, 200);
 		}
 		
-		function do_this_last()
+		function imageSimilarity()
 		{
-			//var detected_face = Boolean(false);
+			dir = "";
 			
-			client
-			  .after(500, function() {
-			
-			«FOR cc : main.conditional_commands» 
-						«cc.compile»
+			«FOR fm : main.featurematch»
+				dir = "WebRoot/images/«fm.image_name».png"
 			«ENDFOR»
+				
+			cv.readImage(dir, function(err, im2) {
+			  	if (err) throw err;
+		
+				//console.log('Loading reference image');
 			
-			«FOR cl : main.conditional_land»  
-					this.stop();
-					this.land();
-					}).after(5000, function () {
-			«ENDFOR»
-			
-			console.log('Finished!');
-			process.exit(0);
-			
+				drone_image();
+		
+				function drone_image()
+				{
+					  cv.readImage(lastPng, function(err, im1) {
+					    if (err) throw err;
+					
+						//console.log('loading image from stream');
+				
+						cv.ImageSimilarity(im2, im1, function (err, dissimilarity) {
+						if (err) throw err;
+				
+						console.log('Dissimilarity: ', dissimilarity);
+							
+							if(dissimilarity < 30 && dissimilarity != null)
+							{
+								console.log('Detected');
+								feature_matched = Boolean(true);
+								clearTimeout(run);
+								do_this_last();
+								
+							}
+							 //console.log('Dissimilarity: ', dissimilarity);
+								
+							});
+				
+					});
+					
+					run = setTimeout(drone_image, 300);
+				}
 			});
 		}
 		
+		function do_this_last()
+		{
+			var p2 = new Promise((resolve, reject) => {
+				return resolve();
+			})			
+			«FOR cc : main.conditional_commands»
+			.then((res) => {
+				«cc.compile»
+			})
+			«ENDFOR»
+			
+			«FOR cl : main.land»
+			.then((res) => {			
+				return delay(5000).then(function() {
+				  	client.stop();
+					client.land();
+				});
+			})
+			«ENDFOR»
+			
+			.then((res) => {
+				return delay(5000).then(function() {
+					process.exit(0);
+				});
+			});
+		}
+		
+		function delay(t, v) {
+		   return new Promise(function(resolve) { 
+		       setTimeout(resolve.bind(null, v), t)
+		   });
+		}
 		  
 		«FOR to : main.takeoff»  
 			client.takeoff();
 		«ENDFOR»
-		  
-		client
-		  .after(5000, function() {
+		
+		var p = new Promise((resolve, reject) => {
+			return resolve();
+		}).then((res) => {
+				return delay(5000).then(function() {
+				});
+			})
 		«FOR f : main.commands»
-				if (detected_face) return;
+			.then((res) => {
+				if (detected_face || feature_matched) return Promise.resolve();
 			«f.compile»
+			})
 		«ENDFOR»
-		«FOR ln : main.land»  
-				this.stop();
-				this.land();
-			  }).after(5000, function () {
-			  	process.exit(0);
+		«FOR ln : main.land» 
+		.then((res) => {
+			if (detected_face || feature_matched) return Promise.resolve();
+		
+			return delay(5000).then(function() {
+			  	client.stop();
+				client.land();
+			});
+		})
 		«ENDFOR»
-		  }).after(5000, function () {
-		  	if (using_conditional) return;
-		  		process.exit(0);
-		  });
+		.then((res) => {
+			if (detected_face || feature_matched) return Promise.resolve();
+
+			return delay(5000).then(function() {
+				process.exit(0);
+			});
+		});
 	'''
 	def compile(Command cmd) '''
 		«IF cmd instanceof Snapshot »
-	    	fs.writeFile('WebRoot/images/«cmd.image_name».png', lastPng, (err) => {});
-	    	})
-	    	.after(1000, function() {
+			return delay(200).then(function() {
+				fs.writeFile('WebRoot/images/«cmd.image_name».png', lastPng, (err) => {});
+			})
 	  	«ENDIF»
 		«IF cmd instanceof Up »
-		    this.stop();
-		    this.up(0.2);
-		  })
-		  .after(«cmd.milliseconds», function() {
+			return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.up(0.2);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Down »
-		    this.stop();
-		    this.down(0.2);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.down(0.2);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Left »
-		    this.stop();
-		    this.left(0.1);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.left(0.1);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Right »
-		    this.stop();
-		    this.right(0.1);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.right(0.1);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Forward »
-		    this.stop();
-		    this.front(0.1);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.front(0.1);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Backward »
-		    this.stop();
-		    this.back(0.1);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.back(0.1);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof RotateL »
-		    this.stop();
-		    this.counterClockwise(0.5);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.counterClockwise(0.5);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof RotateR »
-		    this.stop();
-		    this.clockwise(0.5);
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			  	client.clockwise(0.5);
+			});
 	  	«ENDIF»
 	  	«IF cmd instanceof Wait »
-		    this.stop();	
-		  })
-		  .after(«cmd.milliseconds», function() {
+	  		return delay(«cmd.milliseconds»).then(function() {	
+			  	client.stop();
+			});
 	  	«ENDIF»
 	'''
 	
