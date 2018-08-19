@@ -31,33 +31,49 @@ a:hover {
 	top: 0;
 	left: 0;
 	right: 0;
-	height: 60px;
+	height: 10%;
 	padding: 10px;
 }
 
 .content {
 	display: block;
 	position: absolute;
-	top: 90px;
+	top: 14%;
 	bottom: 0;
 	left: 0;
 	width: 50%;
 }
 
-div.button-wrapper {
+div.right-content {
 	display: block;
 	position: absolute;
-	top: 90px;
-	bottom: 40%;
+	top: 14%;
+	bottom: 0;
 	left: 50%;
 	right: 0;
 	padding: 4px;
+	overflow: scroll;
 	border: 1px solid #aaa;
+}
+
+div.generate-code{
+	display: block;
+	position: absolute;
+	top: 90px;
+	bottom: 0;
+	left: 50%;
+}
+
+#banner{
+	border-radius: 8px;
+	height: 100%;
+	width: 50%;
 }
 
 #xtext-editor {
 	display: block;
 	position: absolute;
+	z-index: 0;
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -69,11 +85,8 @@ div.button-wrapper {
 div.gallery {
 	display: block;
 	position: absolute;
-	top: 60%;
+	top: 52px;
 	bottom: 0;
-	left: 50%;
+	left: 0;
 	right: 0;
-	padding: 4px;
-	overflow: scroll;
-	border: 1px solid #aaa;
 }

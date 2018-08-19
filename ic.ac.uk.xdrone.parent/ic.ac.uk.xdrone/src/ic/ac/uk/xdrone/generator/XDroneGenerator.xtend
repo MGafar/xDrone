@@ -173,7 +173,7 @@ class XDroneGenerator extends AbstractGenerator {
 			
 			«FOR cl : main.land»
 			.then((res) => {			
-				return delay(5000).then(function() {
+				return delay(2000).then(function() {
 				  	client.stop();
 					client.land();
 				});
@@ -181,7 +181,7 @@ class XDroneGenerator extends AbstractGenerator {
 			«ENDFOR»
 			
 			.then((res) => {
-				return delay(5000).then(function() {
+				return delay(2000).then(function() {
 					process.exit(0);
 				});
 			});
@@ -224,7 +224,7 @@ class XDroneGenerator extends AbstractGenerator {
 		.then((res) => {
 			if (detected_face || feature_matched) return Promise.resolve();
 		
-			return delay(5000).then(function() {
+			return delay(2000).then(function() {
 			  	client.stop();
 				client.land();
 			});
@@ -233,7 +233,7 @@ class XDroneGenerator extends AbstractGenerator {
 		.then((res) => {
 			if (detected_face || feature_matched) return Promise.resolve();
 
-			return delay(5000).then(function() {
+			return delay(2000).then(function() {
 				process.exit(0);
 			});
 		});
@@ -316,47 +316,17 @@ class XDroneGenerator extends AbstractGenerator {
 		for(main : resource.allContents.toIterable.filter(Main)) {
 			result = main.compile.toString; 
 			fsa.generateFile('result.js', result)
-			fsa.generateFile('/DEFAULT_ARTIFACT', result)
 		}
-//		var main = null;
-//		if (resource.allContents
-//				.filter(typeof(Main)) !== null) {
-//					////main = resource.allContents.toIterable.filter(typeof(Main))
-//				}
 		
 		try {
 		    var writer = new PrintWriter("WebRoot/result.js", "UTF-8");
 		    writer.println(result);
-		    writer.close();
+		    writer.close();   
 		} catch (IOException e) {
 		   // do something
 		}
 		
-		
-		
-		/*
-		var fsa1 = new JavaIoFileSystemAccess();
-		
-		Guice.createInjector(new AbstractGenericModule() {
-			
-			public Class<? extends IEncodingProvider> bindIEncodingProvider() {
-				return IEncodingProvider.Runtime.class;
-			}
-			
-		}).injectMembers(fsa);
-		
-		fsa1.setOutputPath("/tmp");
-		fsa1.generateFile("xxxx.txt", "contents");
-		*/
-		
-		//fsa.setOutputPath('/tmp')
 		fsa.generateFile('result.js', result)
-		fsa.generateFile('/DEFAULT_ARTIFACT', result)
-			/* 
-			resource.allContents
-				.filter(typeof(Main))
-				.map[name]
-				.join(', ')
-				)*/
+
 	}
 }

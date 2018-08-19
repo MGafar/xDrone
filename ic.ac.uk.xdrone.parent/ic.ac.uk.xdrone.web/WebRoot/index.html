@@ -5,10 +5,18 @@
 	<meta http-equiv="Content-Language" content="en-us">
 	<title>Example Web Editor</title>
 	<link rel="stylesheet" type="text/css" href="xtext/2.12.0/xtext-ace.css"/>
-	<link rel="stylesheet" type="text/css" href="style.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 	<link rel="stylesheet" type="text/css" href="css/lightbox.css"/>
+	<link rel="stylesheet" type="text/css" href="css/tabs.css"/>
+	<link href="css/prettify.css" type="text/css" rel="stylesheet" />
 	<script src="webjars/requirejs/2.3.2/require.min.js"></script>
 	<script src="webjars/jquery/2.2.4/jquery.min.js"></script>
+	<script type="text/javascript" src="js/tabs.js"></script>
+	<script type="text/javascript" src="js/prettify.js"></script>
+	    <style>
+        .prettyprint ol.linenums > li { list-style-type: decimal; }
+        .prettyprint { white-space: pre-wrap; word-wrap: break-word; font-size: 8pt;}
+    	</style>
 	<script type="text/javascript">
 		var baseUrl = window.location.pathname;
 		var fileIndex = baseUrl.indexOf("index.html");
@@ -38,14 +46,18 @@
 							resource : editor.xtextServices.options.resourceId, 
 							fullText : editor.getValue()
 						};	
-						console.log(data);	
+						//console.log(data);	
 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
 							console.log("resource generated");
 						});
 						
-						$('#generated-code').html('<iframe src="http://' + location.host + '/xtext-service/generate?resource=user_code.xDrone" width=99% height=96%></iframe>');
-						e.preventDefault();
+						$('.prettyprinted').removeClass('prettyprinted');
 						
+						$('#generated-code').load("result.js", function(){
+							prettyPrint();
+						});
+						
+						e.preventDefault();
 					});
  					
  					$('#deploy-button').bind("click", function(e){
@@ -56,7 +68,12 @@
  						console.log(data);	
  						$.post(baseUrl+'xtext-service/save?resource='+editor.xtextServices.options.resourceId, data, function(result){
  							console.log("saved resource");
- 						}); 				
+ 						});
+ 						
+ 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
+							console.log("resource generated");
+						});
+ 						 				
  						$.post(baseUrl+'xtext-service/deploy?resource='+editor.xtextServices.options.resourceId, data, function(result){
  							console.log("deploying resource");
  						}); 
@@ -93,30 +110,49 @@
 		});
 	</script>
 </head>
+
 <body>
 
 <div class="container">
-	
 	<div class="header">
-		<h1>Example XDrones Web Editor</h1>
+		<img src="app_images/banner.png" id="banner">
+		<button id="deploy-button" value="Deploy" title="Deploy">Deploy</button>
+		<button id="land-button" value="Emergency Land" title="Emergency Land">Emergency Land</button>
 	</div>
 	
 	<div class="content">
 		<div id="xtext-editor" data-editor-xtext-lang="xDrone" data-editor-resource-id="user_code.xDrone"></div>
 	</div>
 	
-	<div class="button-wrapper">
-		<button id="generate-button" value="Generate" title="Generate">Generate</button>
-		<button id="deploy-button" value="Deploy" title="Deploy">Deploy</button>
-		<button id="land-button" value="Emergency Land" title="Emergency Land">Emergency Land</button>
-		<div id="generated-code">
-		</div>
+	<div class="right-content">
+			<div class="tab">
+			  <button class="tablinks" onclick="openTab(event, 'Debug')">Debug-Mode</button>
+			  <button class="tablinks" onclick="openTab(event, 'User')" id="defaultTab">User-Mode</button>
+			</div>
+						
+			<div id="User" class="tabcontent">
+			  <div class="gallery" id="gallery"></div>
+			</div>
+			
+			<button id="generate-button" value="Generate" title="Generate">Re-Generate</button>
+			
+			<div id="Debug" class="tabcontent">
+			  
+			  <pre class="prettyprint lang-js linenums" id="generated-code">
+			  </pre>
+			</div>
 	</div>
-	
-	<div class="gallery" id="gallery">
-	</div>
-	
 </div>
+
+<script>
+$('#generated-code').load("result.js", function(){
+	prettyPrint();
+});
+</script>
+
+<script>
+document.getElementById("defaultTab").click();
+</script>
 
 <script>
 	$("#gallery").load("html/lightbox.html", function(){

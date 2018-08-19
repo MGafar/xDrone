@@ -1,6 +1,8 @@
-'('=16
-')'=17
+'('=17
+'()'=19
+')'=18
 ';'=12
+'Autonomous_flight'=13
 'BACKWARD'=31
 'DOWN'=27
 'FACEDETECT'=21
@@ -16,12 +18,10 @@
 'UP'=26
 'USEDOWNWARDCAMERA'=20
 'WAIT'=34
-'begin'=13
-'end'=14
-'global_conditional'=15
-'xdrone'=11
-'{'=18
-'}'=19
+'global_conditional'=16
+'xDrone'=11
+'{'=14
+'}'=15
 RULE_ANY_OTHER=10
 RULE_ID=4
 RULE_INT=5

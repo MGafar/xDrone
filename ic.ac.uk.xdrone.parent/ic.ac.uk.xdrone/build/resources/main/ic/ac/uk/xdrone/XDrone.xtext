@@ -9,22 +9,32 @@ Program :
 ;
   
 Main :
-  'xdrone' name = ID
+  'xDrone' program_name = ID
   
   (downwardcamera+=DownwardCamera';'?)?
 
-  'begin'
+  'Autonomous_flight'
+  '{'
   (commands+=Snapshot';'?)?
   ((takeoff+=Takeoff';'?)
-  (commands+=Command ';'?)*
+  ((commands+=SuperCommand) ';'?)*
   (land+=Land';'?))?
-  'end'
+  '}'
   
   ('global_conditional' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
   	'{'
-  		(conditional_commands+=Command';'?)*
+  		(conditional_commands+=SuperCommand';'?)*
   	'}'
   )?
+  
+	(custom_function+=UserFunction)*
+;
+
+UserFunction:
+	(name = ID) '()'
+	'{'
+	(func+=Command';'?)*
+	'}'
 ;
 
 DownwardCamera: 'USEDOWNWARDCAMERA';
@@ -37,6 +47,11 @@ FeatureMatch:
 
 Takeoff: 'TAKEOFF';
 Land : 'LAND';
+
+SuperCommand:
+	Command
+	| FunctionName
+;
 
 Command:
 	Up 
@@ -80,4 +95,8 @@ RotateR:
 ;
 Wait:
 	'WAIT' '(' milliseconds = INT ')'
+;
+
+FunctionName:
+	func_name = ID '()'
 ;

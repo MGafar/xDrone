@@ -28,9 +28,9 @@ var feature_matched = Boolean(false);
 var using_conditional = Boolean(false);
 var count = 0;
 
-using_conditional = Boolean(true);
-var run = setTimeout(detectFaces, 5000);
 
+using_conditional = Boolean(true);
+var run = setTimeout(imageSimilarity, 5000);
 
 function detectFaces()
 {
@@ -67,6 +67,7 @@ function imageSimilarity()
 {
 	dir = "";
 	
+	dir = "WebRoot/images/landing1.png"
 		
 	cv.readImage(dir, function(err, im2) {
 	  	if (err) throw err;
@@ -114,26 +115,38 @@ function do_this_last()
 		return resolve();
 	})			
 	.then((res) => {
-			  	return delay(1000).then(function() {	
+		return delay(200).then(function() {
+			fs.writeFile('WebRoot/images/latest2.png', lastPng, (err) => {});
+		})
+	})
+	.then((res) => {
+		return delay(2000).then(function() {	
+		  	client.stop();
+		  	client.up(0.2);
+		});
+	})
+	.then((res) => {
+			  	return delay(2000).then(function() {	
 					  	client.stop();
-					  	client.counterClockwise(0.5);
+					  	client.down(0.2);
 					});
 	})
 	.then((res) => {
-		return delay(200).then(function() {
-			fs.writeFile('WebRoot/images/shuaitest.png', lastPng, (err) => {});
-		})
+			  	return delay(1000).then(function() {	
+					  	client.stop();
+					  	client.clockwise(0.5);
+					});
 	})
 	
 	.then((res) => {			
-		return delay(5000).then(function() {
+		return delay(2000).then(function() {
 		  	client.stop();
 			client.land();
 		});
 	})
 	
 	.then((res) => {
-		return delay(5000).then(function() {
+		return delay(2000).then(function() {
 			process.exit(0);
 		});
 	});
@@ -153,47 +166,72 @@ var p = new Promise((resolve, reject) => {
 		return delay(5000).then(function() {
 		});
 	})
+
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-return delay(2000).then(function() {	
-  	client.stop();
-  	client.up(0.2);
-});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-	  	return delay(1000).then(function() {	
-			  	client.stop();
-			});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-	  	return delay(2000).then(function() {	
-			  	client.stop();
-			});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-	  	return delay(2000).then(function() {	
-			  	client.stop();
-			});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-	  	return delay(2000).then(function() {	
-			  	client.stop();
-			});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
 .then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-	  	return delay(2000).then(function() {	
-			  	client.stop();
-			});
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
 })
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+		  	return delay(2000).then(function() {	
+				  	client.stop();
+				});
+})
+
 .then((res) => {
 	if (detected_face || feature_matched) return Promise.resolve();
 
-	return delay(5000).then(function() {
+	return delay(2000).then(function() {
 	  	client.stop();
 		client.land();
 	});
@@ -201,7 +239,7 @@ return delay(2000).then(function() {
 .then((res) => {
 	if (detected_face || feature_matched) return Promise.resolve();
 
-	return delay(5000).then(function() {
+	return delay(2000).then(function() {
 		process.exit(0);
 	});
 });
