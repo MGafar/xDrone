@@ -18,6 +18,8 @@ import ic.ac.uk.xdrone.xDrone.RotateL
 import ic.ac.uk.xdrone.xDrone.RotateR
 import ic.ac.uk.xdrone.xDrone.Wait
 import ic.ac.uk.xdrone.xDrone.Snapshot
+import ic.ac.uk.xdrone.xDrone.FunctionName
+import ic.ac.uk.xdrone.xDrone.UserFunction
 
 /**
  * Generates code from your model files on save.
@@ -155,9 +157,18 @@ class XDroneGenerator extends AbstractGenerator {
 				return resolve();
 			})			
 			«FOR cc : main.conditional_commands»
-			.then((res) => {
-				«cc.compile»
-			})
+				«IF cc instanceof Command »
+					.then((res) => {
+						«cc.compile»
+					})
+				«ENDIF»
+				«IF cc instanceof FunctionName»
+					«FOR nv : main.custom_function»
+						«IF cc.func_name == nv.name »
+							«compile_custom(nv, false)»
+						«ENDIF»
+					«ENDFOR»
+				«ENDIF»
 			«ENDFOR»
 			
 			«FOR cl : main.land»
@@ -192,12 +203,23 @@ class XDroneGenerator extends AbstractGenerator {
 				return delay(5000).then(function() {
 				});
 			})
+		
 		«FOR f : main.commands»
-			.then((res) => {
-				if (detected_face || feature_matched) return Promise.resolve();
-			«f.compile»
-			})
+			«IF f instanceof Command »
+				.then((res) => {
+						if (detected_face || feature_matched) return Promise.resolve();
+					«f.compile»
+				})
+			«ENDIF»
+			«IF f instanceof FunctionName»
+				«FOR nv : main.custom_function»
+					«IF f.func_name == nv.name »
+						«compile_custom(nv, true)»
+					«ENDIF»
+				«ENDFOR»
+			«ENDIF»
 		«ENDFOR»
+		
 		«FOR ln : main.land» 
 		.then((res) => {
 			if (detected_face || feature_matched) return Promise.resolve();
@@ -216,6 +238,18 @@ class XDroneGenerator extends AbstractGenerator {
 			});
 		});
 	'''
+	
+	def compile_custom(UserFunction ur, Boolean main) '''
+		«FOR cs  : ur.func»  
+			.then((res) => {
+				«IF main»
+				if (detected_face || feature_matched) return Promise.resolve();
+				«ENDIF»
+				«cs.compile»
+			})
+		«ENDFOR»
+	'''
+	
 	def compile(Command cmd) '''
 		«IF cmd instanceof Snapshot »
 			return delay(200).then(function() {

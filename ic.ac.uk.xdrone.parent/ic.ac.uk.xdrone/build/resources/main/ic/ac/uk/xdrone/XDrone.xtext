@@ -10,6 +10,8 @@ Program :
   
 Main :
   'xdrone' name = ID
+  
+  (downwardcamera+=DownwardCamera';'?)?
 
   'begin'
   (commands+=Snapshot';'?)?
@@ -18,16 +20,14 @@ Main :
   (land+=Land';'?))?
   'end'
   
-  ('global_conditional' '(' (featurematch+=Conditional | facedetect+=FaceDetect) ')' 
+  ('global_conditional' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
   	'{'
   		(conditional_commands+=Command';'?)*
   	'}'
   )?
 ;
 
-Conditional:
-	FeatureMatch
-;
+DownwardCamera: 'USEDOWNWARDCAMERA';
 
 FaceDetect: 'FACEDETECT';
 

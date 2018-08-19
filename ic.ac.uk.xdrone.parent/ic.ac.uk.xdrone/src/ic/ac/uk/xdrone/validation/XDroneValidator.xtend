@@ -3,6 +3,13 @@
  */
 package ic.ac.uk.xdrone.validation
 
+import org.eclipse.xtext.validation.Check
+import ic.ac.uk.xdrone.xDrone.FunctionName
+import ic.ac.uk.xdrone.xDrone.XDronePackage
+import java.util.ArrayList
+import org.eclipse.xtext.resource.IResourceServiceProvider
+import javax.inject.Inject
+import org.eclipse.xtext.naming.IQualifiedNameConverter
 
 /**
  * This class contains custom validation rules. 
@@ -11,15 +18,26 @@ package ic.ac.uk.xdrone.validation
  */
 class XDroneValidator extends AbstractXDroneValidator {
 	
-//	public static val INVALID_NAME = 'invalidName'
-//
-//	@Check
-//	def checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.name.charAt(0))) {
-//			warning('Name should start with a capital', 
-//					XDronePackage.Literals.GREETING__NAME,
-//					INVALID_NAME)
-//		}
-//	}
+	var existingFunctions = new ArrayList<String>;
+		
+	@Inject IResourceServiceProvider.Registry rspr
+	@Inject IQualifiedNameConverter converter
 	
+	@Check
+	def void printExportedObjects(FunctionName resource) {
+		existingFunctions.clear();
+	    val resServiceProvider = rspr.getResourceServiceProvider(resource.eResource.URI)
+	    val manager = resServiceProvider.getResourceDescriptionManager()
+	    val description = manager.getResourceDescription(resource.eResource)
+	    for (eod : description.exportedObjects) {
+	        existingFunctions.add(converter.toString(eod.qualifiedName));
+    	}
+ 		
+ 		if(!existingFunctions.contains(resource.func_name))
+ 		{
+ 			error('No matching function!', XDronePackage.Literals.FUNCTION_NAME__FUNC_NAME)
+ 		}
+ 		
+ 	}
+ 			
 }
