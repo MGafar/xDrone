@@ -67,18 +67,19 @@
  							resource : editor.xtextServices.options.resourceId,
  							fullText : editor.getValue()
  						};	
- 						console.log(data);	
+
  						$.post(baseUrl+'xtext-service/save?resource='+editor.xtextServices.options.resourceId, data, function(result){
  							console.log("saved resource");
+ 							
+ 	 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
+ 								console.log("resource generated");
+ 								
+ 		 						$.post(baseUrl+'xtext-service/deploy?resource='+editor.xtextServices.options.resourceId, data, function(result){
+ 		 							console.log("deploying resource");
+ 		 						}); 
+ 							});
  						});
  						
- 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
-							console.log("resource generated");
-						});
- 						 				
- 						$.post(baseUrl+'xtext-service/deploy?resource='+editor.xtextServices.options.resourceId, data, function(result){
- 							console.log("deploying resource");
- 						}); 
  						e.preventDefault();
  					});
  					
@@ -213,7 +214,6 @@ document.getElementById("defaultTab").click();
 		}
 	};
 </script>
-
 
 </body>
 </html>

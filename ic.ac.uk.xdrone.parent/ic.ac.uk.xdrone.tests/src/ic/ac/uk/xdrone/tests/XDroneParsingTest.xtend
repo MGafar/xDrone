@@ -21,9 +21,19 @@ class XDroneParsingTest {
 	@Test
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			xdrone test
-			begin
-			end
+			xDrone Name
+			
+			
+			Autonomous_flight {
+				TAKEOFF
+				LAND
+			}
+			
+			global_conditional(FEATUREMATCH(landing2))
+			{
+				ROTATELEFT(2000)
+				BACKWARD(1000)
+			}
 		''')
 		Assert.assertNotNull(result)
 		Assert.assertTrue(result.eResource.errors.isEmpty)

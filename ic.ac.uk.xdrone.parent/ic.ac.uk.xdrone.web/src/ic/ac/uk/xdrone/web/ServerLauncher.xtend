@@ -22,10 +22,12 @@ import java.io.PrintWriter
 import java.util.concurrent.TimeUnit
 import java.util.Arrays
 import java.util.Comparator
+import java.net.Socket
 
 class ServerLauncher {
 	
 	static boolean shutdown = false;
+	static boolean drone_connection_alive=false;
 
 	def static InetAddress getIPv4InetAddress() throws SocketException, UnknownHostException{
 		
@@ -149,10 +151,46 @@ class ServerLauncher {
 		}
 		executor.scheduleAtFixedRate(gallery_thread, 0, 5, TimeUnit.SECONDS);
 	}
+	
+	def static void check_if_drone_connected()
+	{
+		val executor = Executors.newSingleThreadScheduledExecutor();
+			
+		var Runnable ping_drone = new Runnable() 
+		{
+			override run() {
+				if(shutdown)
+					executor.shutdown()
+				
+				var reachable = InetAddress.getByName("192.168.1.1").isReachable(1000);
+			
+				if(!reachable)
+				{
+					drone_connection_alive = false;
+					println('Drone is NOT reachable!');
+				} else
+				{
+					if(!drone_connection_alive)
+					{
+						get_video_feed();
+					}
+					println('Drone is reachable!');
+				}
+			}			
+		}
+		executor.scheduleAtFixedRate(ping_drone, 0, 5, TimeUnit.SECONDS);
+	}
+	
+	def static void get_video_feed()
+	{
+		println("Opening connection!");
+		var Socket fromDrone = new Socket("192.168.1.1", 5555);
+		drone_connection_alive = true;
+	}
 
 	def static void main(String[] args) {
 			
-		val server = new Server(new InetSocketAddress(getIPv4InetAddress(), 8088))
+		val server = new Server(new InetSocketAddress(getIPv4InetAddress(), 8087))
 		
 		server.handler = new WebAppContext => [
 			resourceBase = 'WebRoot'
@@ -171,6 +209,7 @@ class ServerLauncher {
 		try {
 			server.start
 			gallery_listener();
+			check_if_drone_connected();
 			log.info('Server started ' + server.getURI + '...')
 			log.info(Inet4Address.getLocalHost().getHostAddress())
 			new Thread[

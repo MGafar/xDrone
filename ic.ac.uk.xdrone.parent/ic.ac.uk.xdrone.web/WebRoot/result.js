@@ -29,8 +29,6 @@ var using_conditional = Boolean(false);
 var count = 0;
 
 
-using_conditional = Boolean(true);
-var run = setTimeout(imageSimilarity, 5000);
 
 function detectFaces()
 {
@@ -67,7 +65,6 @@ function imageSimilarity()
 {
 	dir = "";
 	
-	dir = "WebRoot/images/landing1.png"
 		
 	cv.readImage(dir, function(err, im2) {
 	  	if (err) throw err;
@@ -114,29 +111,6 @@ function do_this_last()
 	var p2 = new Promise((resolve, reject) => {
 		return resolve();
 	})			
-	.then((res) => {
-		return delay(200).then(function() {
-			fs.writeFile('WebRoot/images/latest2.png', lastPng, (err) => {});
-		})
-	})
-	.then((res) => {
-		return delay(2000).then(function() {	
-		  	client.stop();
-		  	client.up(0.2);
-		});
-	})
-	.then((res) => {
-			  	return delay(2000).then(function() {	
-					  	client.stop();
-					  	client.down(0.2);
-					});
-	})
-	.then((res) => {
-			  	return delay(1000).then(function() {	
-					  	client.stop();
-					  	client.clockwise(0.5);
-					});
-	})
 	
 	.then((res) => {			
 		return delay(2000).then(function() {
@@ -167,41 +141,6 @@ var p = new Promise((resolve, reject) => {
 		});
 	})
 
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(1234).then(function() {	
-				  	client.stop();
-				  	client.clockwise(0.5);
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(16).then(function() {	
-				  	client.stop();
-				  	client.back(0.1);
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(90).then(function() {	
-				  	client.stop();
-				  	client.left(0.1);
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(67).then(function() {	
-				  	client.stop();
-				  	client.down(0.2);
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(66).then(function() {	
-				  	client.stop();
-				  	client.left(0.1);
-				});
-})
 
 .then((res) => {
 	if (detected_face || feature_matched) return Promise.resolve();
