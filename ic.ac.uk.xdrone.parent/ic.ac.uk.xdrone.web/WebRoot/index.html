@@ -49,12 +49,14 @@
 						//console.log(data);	
 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
 							console.log("resource generated");
+							
+							$('.prettyprinted').removeClass('prettyprinted');
+							
+							$('#generated-code').load("result.js", function(){
+								prettyPrint();
 						});
 						
-						$('.prettyprinted').removeClass('prettyprinted');
 						
-						$('#generated-code').load("result.js", function(){
-							prettyPrint();
 						});
 						
 						e.preventDefault();

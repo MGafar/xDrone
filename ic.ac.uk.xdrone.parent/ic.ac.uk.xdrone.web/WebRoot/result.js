@@ -169,62 +169,37 @@ var p = new Promise((resolve, reject) => {
 
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
+		  	return delay(1234).then(function() {	
 				  	client.stop();
+				  	client.clockwise(0.5);
 				});
 })
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
+		  	return delay(16).then(function() {	
 				  	client.stop();
+				  	client.back(0.1);
 				});
 })
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
+		  	return delay(90).then(function() {	
 				  	client.stop();
+				  	client.left(0.1);
 				});
 })
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
+		  	return delay(67).then(function() {	
 				  	client.stop();
+				  	client.down(0.2);
 				});
 })
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
+		  	return delay(66).then(function() {	
 				  	client.stop();
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
-				  	client.stop();
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
-				  	client.stop();
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
-				  	client.stop();
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
-				  	client.stop();
-				});
-})
-.then((res) => {
-		if (detected_face || feature_matched) return Promise.resolve();
-		  	return delay(2000).then(function() {	
-				  	client.stop();
+				  	client.left(0.1);
 				});
 })
 
