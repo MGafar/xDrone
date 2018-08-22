@@ -4,12 +4,9 @@ var http    = require('http');
 var fs		= require('fs');
 var face_cascade = new cv.CascadeClassifier('/usr/lib/node_modules/opencv/data/haarcascade_frontalface_alt2.xml');
 var promise	    = require('/usr/lib/node_modules/promise');
+var PaVEParser = require('/usr/lib/node_modules/ar-drone/lib/video/PaVEParser');
 
-//var option = new Object();
-//option.imageSize = "1280x720";
-//var client = arDrone.createClient(option);
-var client = arDrone.createClient();
-
+var client = arDrone.createClient();		
 
 client.config('video:video_channel', 0);
 
@@ -22,6 +19,21 @@ pngStream
   .on('data', function(pngBuffer) {
     lastPng = pngBuffer;
   });
+  
+  
+var video = client.getVideoStream();
+var output = fs.createWriteStream('WebRoot/videos/kiyo.h264');
+var parser = new PaVEParser();
+
+parser
+  .on('data', function(data) {
+   	output.write(data.payload);
+  })
+  .on('end', function() {
+    output.end();
+});
+
+video.pipe(parser);  
   
 var detected_face = Boolean(false);
 var feature_matched = Boolean(false);
@@ -112,12 +124,6 @@ function do_this_last()
 		return resolve();
 	})			
 	
-	.then((res) => {			
-		return delay(2000).then(function() {
-		  	client.stop();
-			client.land();
-		});
-	})
 	
 	.then((res) => {
 		return delay(2000).then(function() {
@@ -132,7 +138,6 @@ function delay(t, v) {
    });
 }
   
-client.takeoff();
 
 var p = new Promise((resolve, reject) => {
 	return resolve();
@@ -142,14 +147,6 @@ var p = new Promise((resolve, reject) => {
 	})
 
 
-.then((res) => {
-	if (detected_face || feature_matched) return Promise.resolve();
-
-	return delay(2000).then(function() {
-	  	client.stop();
-		client.land();
-	});
-})
 .then((res) => {
 	if (detected_face || feature_matched) return Promise.resolve();
 

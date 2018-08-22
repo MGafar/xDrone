@@ -22,8 +22,9 @@ import java.io.PrintWriter
 import java.util.concurrent.TimeUnit
 import java.util.Arrays
 import java.util.Comparator
-import java.net.Socket
-
+import org.eclipse.jetty.server.handler.ContextHandler
+import org.eclipse.jetty.server.handler.ContextHandlerCollection
+	
 class ServerLauncher {
 	
 	static boolean shutdown = false;
@@ -31,9 +32,9 @@ class ServerLauncher {
 
 	def static InetAddress getIPv4InetAddress() throws SocketException, UnknownHostException{
 		
-		val ni = NetworkInterface.getByName("wlan0");
+//		val ni = NetworkInterface.getByName("wlan0");
 		
-//s		val ni = NetworkInterface.getByName("wlp3s0");
+		val ni = NetworkInterface.getByName("wlp3s0");
 		
 		try{
 			ni.getInetAddresses();
@@ -151,6 +152,62 @@ class ServerLauncher {
 		}
 		executor.scheduleAtFixedRate(gallery_thread, 0, 5, TimeUnit.SECONDS);
 	}
+
+	def static void video_listener()
+	{
+		val executor = Executors.newSingleThreadScheduledExecutor();
+			
+		var Runnable video_thread = new Runnable() 
+		{
+			var File[] temp_files = null;
+			
+			override run() {
+				
+				if(shutdown)
+					executor.shutdown()
+					
+				var PrintWriter writer
+				try {
+					var File[] files = new File("WebRoot/processed_videos").listFiles();
+					
+					//Sort fetched images by last modified
+					Arrays.sort(files, new Comparator<File>(){
+						override compare(File arg0, File arg1) {
+							return Long.valueOf(arg0.lastModified()).compareTo(arg1.lastModified());
+						}	
+					})
+					
+					//Show latest image first
+					files.reverse();
+					
+					//Checks if there's file changes in directory
+					//If it's the same a new HTML Document isn't created
+					if(Arrays.equals(files, temp_files))
+						return;
+					
+					writer = new PrintWriter("WebRoot/html/videos.html", "UTF-8");
+					temp_files = files.clone();
+					
+					for (File file : files) {
+						var String file_no_extension = file.getName();
+						file_no_extension = file_no_extension.substring(0, file_no_extension.lastIndexOf("."));
+						
+					    if (file.isFile()) {
+							writer.println("<li movieurl=\"/processed_videos/" + file.getName() + "\" moviesposter=\"/thumbnails/" + file_no_extension + ".png\"><img src=\"/thumbnails/" + file_no_extension + ".png\" width=\"90%\"></li>");
+					    }
+					}
+				
+					writer.close();
+																
+				} catch (Exception e) {
+					e.printStackTrace()
+					executor.shutdown();
+				}
+			}			
+		}
+		executor.scheduleAtFixedRate(video_thread, 0, 5, TimeUnit.SECONDS);
+	}
+
 	
 	def static void check_if_drone_connected()
 	{
@@ -167,32 +224,45 @@ class ServerLauncher {
 				if(!reachable)
 				{
 					drone_connection_alive = false;
-					println('Drone is NOT reachable!');
+					//println('Drone is NOT reachable!');
 				} else
 				{
-					if(!drone_connection_alive)
-					{
-						get_video_feed();
-					}
-					println('Drone is reachable!');
+					//println('Drone is reachable!');
 				}
 			}			
 		}
 		executor.scheduleAtFixedRate(ping_drone, 0, 5, TimeUnit.SECONDS);
 	}
 	
-	def static void get_video_feed()
+	def static void convert_to_mp4()
 	{
-		println("Opening connection!");
-		var Socket fromDrone = new Socket("192.168.1.1", 5555);
-		drone_connection_alive = true;
+		val pb = new ProcessBuilder().inheritIO()
+						.command("/bin/bash", "-c", System.getProperty("user.dir") + "/xdrone-converter.sh" + " > /tmp/xdrone-converter.log").start();
+	
+		if (!pb.alive){
+				println("exit code: "+pb.exitValue)
+			}
+		
+		//println("Video conversion finished!");
+	}
+	
+	def static void generate_thumbnails()
+	{	
+		val pb = new ProcessBuilder().inheritIO()
+						.command("/bin/bash", "-c", System.getProperty("user.dir") + "/xdrone-thumbnail.sh" + " > /dev/null 2>&1").start();
+	
+		if (!pb.alive){
+				println("exit code: "+pb.exitValue)
+			}
+			
+		//println("Thumbnails Generated!");
 	}
 
 	def static void main(String[] args) {
 			
-		val server = new Server(new InetSocketAddress(getIPv4InetAddress(), 8087))
+		val server = new Server(new InetSocketAddress("0.0.0.0", 8087))
 		
-		server.handler = new WebAppContext => [
+		var ContextHandler main_context_handler = new WebAppContext => [
 			resourceBase = 'WebRoot'
 			welcomeFiles = #["index.html"]
 			contextPath = "/"
@@ -205,13 +275,23 @@ class ServerLauncher {
 			setAttribute(WebInfConfiguration.CONTAINER_JAR_PATTERN, '.*/ic\\.ac\\.uk\\.xdrone\\.web/.*,.*\\.jar')
 			setInitParameter("org.mortbay.jetty.servlet.Default.useFileMappedBuffer", "false")
 		]
+		
+		var ContextHandlerCollection contexts = new ContextHandlerCollection();
+		
+		contexts.addHandler(main_context_handler);
+		server.setHandler(contexts)
+		
 		val log = new Slf4jLog(ServerLauncher.name)
 		try {
 			server.start
 			gallery_listener();
-			check_if_drone_connected();
+			convert_to_mp4();
+			generate_thumbnails();
+			video_listener();
+			//check_if_drone_connected();
 			log.info('Server started ' + server.getURI + '...')
 			log.info(Inet4Address.getLocalHost().getHostAddress())
+
 			new Thread[
 				log.info('Press enter to stop the server...')
 				val key = System.in.read

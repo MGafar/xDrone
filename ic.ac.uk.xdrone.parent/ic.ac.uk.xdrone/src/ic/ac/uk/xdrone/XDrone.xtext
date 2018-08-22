@@ -12,12 +12,16 @@ Main :
   'xDrone' program_name = ID
   
   (downwardcamera+=DownwardCamera';'?)?
+  (recordedflight+=RecordedFlight';'?)?
+
+  (commands+=Snapshot';'?)?
 
   'Autonomous_flight'
   '{'
-  (commands+=Snapshot';'?)?
   ((takeoff+=Takeoff';'?)
-  ((commands+=SuperCommand) ';'?)*
+ 	 '{'
+ 		 ((commands+=SuperCommand) ';'?)*
+ 	 '}'
   (land+=Land';'?))?
   '}'
   
@@ -29,6 +33,9 @@ Main :
   
 	(custom_function+=UserFunction)*
 ;
+
+RecordedFlight:
+	'RECORDFLIGHT' '('video_name = ID')';
 
 UserFunction:
 	(name = ID) '()'

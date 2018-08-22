@@ -85,7 +85,6 @@ class XDroneServiceDispatcher extends XtextServiceDispatcher {
 						
 						if (!pb.alive){
 							println("exit code: "+pb.exitValue)
-							
 						}
 						
 						return new DocumentStateResult(document.stateId)

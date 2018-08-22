@@ -118,7 +118,7 @@
 
 <div class="container">
 	<div class="header">
-		<img src="app_images/banner.png" id="banner">
+		<img src="/app_images/banner.png" id="banner">
 		<button id="deploy-button" value="Deploy" title="Deploy">Deploy</button>
 		<button id="land-button" value="Emergency Land" title="Emergency Land">Emergency Land</button>
 	</div>
@@ -130,22 +130,32 @@
 	<div class="right-content">
 			<div class="tab">
 			  <button class="tablinks" onclick="openTab(event, 'Debug')">Debug-Mode</button>
-			  <button class="tablinks" onclick="openTab(event, 'User')" id="defaultTab">User-Mode</button>
+			  <button class="tablinks" onclick="openTab(event, 'Video')">Video-Player</button>
+			  <button class="tablinks" onclick="openTab(event, 'User')" id="defaultTab">Image-Gallery</button>
+			</div>
+			
+			<div id="Video" class="tabcontent">
+			 <video id="videoarea" width="100%" controls="controls" poster="" src=""></video>
+			
+			<ul id="playlist" style="list-style: none;">
+			</ul>
 			</div>
 						
 			<div id="User" class="tabcontent">
 			  <div class="gallery" id="gallery"></div>
 			</div>
-			
-			<button id="generate-button" value="Generate" title="Generate">Re-Generate</button>
-			
+
 			<div id="Debug" class="tabcontent">
-			  
+			  <button id="generate-button" value="Generate" title="Generate">Re-Generate</button>
 			  <pre class="prettyprint lang-js linenums" id="generated-code">
 			  </pre>
 			</div>
 	</div>
 </div>
+
+<script>
+
+</script>
 
 <script>
 $('#generated-code').load("result.js", function(){
@@ -158,27 +168,45 @@ document.getElementById("defaultTab").click();
 </script>
 
 <script>
+	$("#playlist").load("html/videos.html", function(){
+		$.getScript("js/videos.js", function(){});
+	});
+
 	$("#gallery").load("html/lightbox.html", function(){
-		
 		$.getScript("js/lightbox.js", function(){});
 	});
 	
 	var element = document.getElementById('deploy-button');
 	element.onclick = function () {
 		
-		var result = false;
+		var result_gallery = false;
+		var result_video = false;
 		
 		function gallery_poll(){
 			if(document.getElementById('myModal').style.display != "block"){
 				ifHasChanged("html/lightbox.html", function(nModif, nVisit){
 					//console.log("HTML HAS CHANGED!");
-					result = false;
-					$("#gallery").load("html/lightbox.html");
+					result_gallery = false;
+					$("#gallery").load("html/lightbox.html", function(){
+						$.getScript("js/lightbox.js", function(){});
+					});
 				});	
 			}
 		};
 		
-		exponentialBackoff(gallery_poll, 20, 500);	
+		exponentialBackoff(gallery_poll, 25, 1000);
+		
+		function video_poll(){
+				ifHasChanged("html/videos.html", function(nModif, nVisit){
+					//console.log("Video HTML HAS CHANGED!");
+					result_video = false;
+					$("#playlist").load("html/videos.html", function(){
+						$.getScript("js/videos.js", function(){});
+					});
+				});	
+		};
+		
+		exponentialBackoff(video_poll, 25, 1000);
 		
 		/* Reference this code - NOT MINE DON'T FORGET - */
 		function getHeaderTime () {
@@ -199,10 +227,9 @@ document.getElementById("defaultTab").click();
 		}
 		
 		function exponentialBackoff(toTry, max, delay) {
-			//console.log('Running!');
 		    toTry();
 		    
-		    if (result) {
+		    if (result_gallery && result_video) {
 		        return;
 		    } else {
 		        if (max > 0) {
