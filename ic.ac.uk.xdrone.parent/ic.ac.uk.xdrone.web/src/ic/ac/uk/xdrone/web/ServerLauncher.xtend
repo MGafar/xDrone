@@ -32,9 +32,9 @@ class ServerLauncher {
 
 	def static InetAddress getIPv4InetAddress() throws SocketException, UnknownHostException{
 		
-//		val ni = NetworkInterface.getByName("wlan0");
+		val ni = NetworkInterface.getByName("wlan0");
 		
-		val ni = NetworkInterface.getByName("wlp3s0");
+//		val ni = NetworkInterface.getByName("wlp3s0");
 		
 		try{
 			ni.getInetAddresses();
@@ -260,7 +260,7 @@ class ServerLauncher {
 
 	def static void main(String[] args) {
 			
-		val server = new Server(new InetSocketAddress("0.0.0.0", 8087))
+		val server = new Server(new InetSocketAddress(getIPv4InetAddress(), 8087))
 		
 		var ContextHandler main_context_handler = new WebAppContext => [
 			resourceBase = 'WebRoot'
