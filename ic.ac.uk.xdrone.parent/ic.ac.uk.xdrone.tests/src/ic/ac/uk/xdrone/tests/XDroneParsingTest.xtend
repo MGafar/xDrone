@@ -26,6 +26,9 @@ class XDroneParsingTest {
 			
 			Autonomous_flight {
 				TAKEOFF
+				{
+					
+				}
 				LAND
 			}
 			
