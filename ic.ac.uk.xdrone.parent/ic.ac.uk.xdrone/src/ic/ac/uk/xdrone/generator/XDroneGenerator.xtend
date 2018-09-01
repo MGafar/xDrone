@@ -153,7 +153,7 @@ class XDroneGenerator extends AbstractGenerator {
 								do_this_last();
 								
 							}
-							 //console.log('Dissimilarity: ', dissimilarity);
+							 console.log('Dissimilarity: ', dissimilarity);
 								
 							});
 				
@@ -188,10 +188,8 @@ class XDroneGenerator extends AbstractGenerator {
 			
 			«FOR cl : main.land»
 			.then((res) => {			
-				return delay(2000).then(function() {
 				  	client.stop();
 					client.land();
-				});
 			})
 			«ENDFOR»
 			
@@ -239,10 +237,8 @@ class XDroneGenerator extends AbstractGenerator {
 		.then((res) => {
 			if (detected_face || feature_matched) return Promise.resolve();
 		
-			return delay(2000).then(function() {
 			  	client.stop();
 				client.land();
-			});
 		})
 		«ENDFOR»
 		.then((res) => {
@@ -272,57 +268,48 @@ class XDroneGenerator extends AbstractGenerator {
 			})
 	  	«ENDIF»
 		«IF cmd instanceof Up »
-			return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
 			  	client.up(0.2);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
-	  	«IF cmd instanceof Down »
-	  		return delay(«cmd.milliseconds»).then(function() {	
+	  	«IF cmd instanceof Down »	
 			  	client.stop();
 			  	client.down(0.2);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	  	«IF cmd instanceof Left »
-	  		return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
 			  	client.left(0.1);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	  	«IF cmd instanceof Right »
-	  		return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
 			  	client.right(0.1);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
-	  	«IF cmd instanceof Forward »
-	  		return delay(«cmd.milliseconds»).then(function() {	
+	  	«IF cmd instanceof Forward »	
 			  	client.stop();
 			  	client.front(0.1);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	  	«IF cmd instanceof Backward »
-	  		return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
 			  	client.back(0.1);
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
-	  	«IF cmd instanceof RotateL »
-	  		return delay(«cmd.milliseconds»).then(function() {	
+	  	«IF cmd instanceof RotateL »	
 			  	client.stop();
 			  	client.counterClockwise(0.5);
-			});
+				return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	  	«IF cmd instanceof RotateR »
-	  		return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
 			  	client.clockwise(0.5);
-			});
+				return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	  	«IF cmd instanceof Wait »
-	  		return delay(«cmd.milliseconds»).then(function() {	
 			  	client.stop();
-			});
+			  	return delay(«cmd.milliseconds»);
 	  	«ENDIF»
 	'''
 	

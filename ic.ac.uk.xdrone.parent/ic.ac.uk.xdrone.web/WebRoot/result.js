@@ -10,6 +10,8 @@ var client = arDrone.createClient();
 
 client.config('video:video_channel', 0);
 
+//Override camera config if using downward camera
+client.config('video:video_channel', 3);
 
 var pngStream = client.getPngStream();
 		
@@ -22,7 +24,7 @@ pngStream
   
   
 var video = client.getVideoStream();
-var output = fs.createWriteStream('WebRoot/videos/kiyo.h264');
+var output = fs.createWriteStream('WebRoot/videos/landingrecog15.h264');
 var parser = new PaVEParser();
 
 parser
@@ -41,6 +43,8 @@ var using_conditional = Boolean(false);
 var count = 0;
 
 
+using_conditional = Boolean(true);
+var run = setTimeout(imageSimilarity, 5000);
 
 function detectFaces()
 {
@@ -77,6 +81,7 @@ function imageSimilarity()
 {
 	dir = "";
 	
+	dir = "WebRoot/images/landing3.png"
 		
 	cv.readImage(dir, function(err, im2) {
 	  	if (err) throw err;
@@ -105,7 +110,7 @@ function imageSimilarity()
 						do_this_last();
 						
 					}
-					 //console.log('Dissimilarity: ', dissimilarity);
+					 console.log('Dissimilarity: ', dissimilarity);
 						
 					});
 		
@@ -124,6 +129,10 @@ function do_this_last()
 		return resolve();
 	})			
 	
+	.then((res) => {			
+		  	client.stop();
+			client.land();
+	})
 	
 	.then((res) => {
 		return delay(2000).then(function() {
@@ -138,6 +147,7 @@ function delay(t, v) {
    });
 }
   
+client.takeoff();
 
 var p = new Promise((resolve, reject) => {
 	return resolve();
@@ -146,7 +156,113 @@ var p = new Promise((resolve, reject) => {
 		});
 	})
 
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.down(0.2);
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	return delay(1000);
+})
+.then((res) => {
+		if (detected_face || feature_matched) return Promise.resolve();
+	client.stop();
+	client.front(0.1);
+	return delay(1500);
+})
 
+.then((res) => {
+	if (detected_face || feature_matched) return Promise.resolve();
+
+	  	client.stop();
+		client.land();
+})
 .then((res) => {
 	if (detected_face || feature_matched) return Promise.resolve();
 

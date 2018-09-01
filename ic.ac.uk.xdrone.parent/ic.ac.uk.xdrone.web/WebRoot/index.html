@@ -200,9 +200,14 @@ document.getElementById("defaultTab").click();
 				ifHasChanged("html/videos.html", function(nModif, nVisit){
 					//console.log("Video HTML HAS CHANGED!");
 					result_video = false;
-					$("#playlist").load("html/videos.html", function(){
-						$.getScript("js/videos.js", function(){});
-					});
+					
+					setTimeout(function(){
+					    
+						$("#playlist").load("html/videos.html", function(){
+							$.getScript("js/videos.js", function(){});
+						});
+						
+					 },5000);
 				});	
 		};
 		

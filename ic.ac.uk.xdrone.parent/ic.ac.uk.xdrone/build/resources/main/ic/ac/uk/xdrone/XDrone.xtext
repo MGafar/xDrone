@@ -1,0 +1,109 @@
+grammar ic.ac.uk.xdrone.XDrone with org.eclipse.xtext.common.Terminals
+
+generate xDrone "http://www.ac.ic/uk/xdrone/XDrone"
+
+import "http://www.eclipse.org/xtext/xbase/Xbase"
+ 
+Program :
+  main = Main
+;
+  
+Main :
+  'xDrone' program_name = ID
+  
+  (downwardcamera+=DownwardCamera';'?)?
+  (recordedflight+=RecordedFlight';'?)?
+
+  (commands+=Snapshot';'?)?
+
+  'Autonomous_flight'
+  '{'
+  ((takeoff+=Takeoff';'?)
+ 	 '{'
+ 		 ((commands+=SuperCommand) ';'?)*
+ 	 '}'
+  (land+=Land';'?))?
+  '}'
+  
+  ('global_conditional' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
+  	'{'
+  		(conditional_commands+=SuperCommand';'?)*
+  	'}'
+  )?
+  
+	(custom_function+=UserFunction)*
+;
+
+RecordedFlight:
+	'RECORDFLIGHT' '('video_name = ID')';
+
+UserFunction:
+	(name = ID) '()'
+	'{'
+	(func+=Command';'?)*
+	'}'
+;
+
+DownwardCamera: 'USEDOWNWARDCAMERA';
+
+FaceDetect: 'FACEDETECT';
+
+FeatureMatch:
+	'FEATUREMATCH' '('image_name = ID')'
+;
+
+Takeoff: 'TAKEOFF';
+Land : 'LAND';
+
+SuperCommand:
+	Command
+	| FunctionName
+;
+
+Command:
+	Up 
+	| Down 
+	| Left 
+	| Right 
+	| Forward 
+	| Backward
+	| RotateL
+	| RotateR
+	| Wait
+	| Snapshot
+;
+
+Snapshot:
+	'SNAPSHOT' '('image_name = ID')'
+;
+Up: 
+	'UP' '('milliseconds = INT')'
+;
+Down: 
+	'DOWN' '('milliseconds = INT')'
+;
+Left: 
+	'LEFT' '('milliseconds = INT')'
+;
+Right: 
+	'RIGHT' '('milliseconds = INT')'
+;
+Forward: 
+	'FORWARD' '('milliseconds = INT')'
+;
+Backward: 
+	'BACKWARD' '('milliseconds = INT')'
+;
+RotateL: 
+	'ROTATELEFT' '('milliseconds = INT')'
+;
+RotateR: 
+	'ROTATERIGHT' '('milliseconds = INT')'
+;
+Wait:
+	'WAIT' '(' milliseconds = INT ')'
+;
+
+FunctionName:
+	func_name = ID '()'
+;
