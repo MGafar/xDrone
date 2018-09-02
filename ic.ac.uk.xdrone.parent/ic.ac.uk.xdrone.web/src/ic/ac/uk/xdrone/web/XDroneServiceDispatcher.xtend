@@ -28,8 +28,6 @@ class XDroneServiceDispatcher extends XtextServiceDispatcher {
             	getCompileService(context)
             case 'emergencystop':
             	getStopService(context)
-//            case 'dynamic-gallery':
-//            	getDynamicGallery(context)
             default:
                 super.createServiceDescriptor(serviceType, context)
         }
@@ -125,6 +123,8 @@ class XDroneServiceDispatcher extends XtextServiceDispatcher {
 						.command("/bin/bash", "-c", System.getProperty("user.dir") + "/xdrone-deploy.sh" + " > /tmp/xdrone.log").start();
 						
 						println(System.getProperty("user.dir") + "/xdrone-deploy.sh");
+						
+						pb.waitFor();
 						
 						if (!pb.alive){
 							println("exit code: "+pb.exitValue)

@@ -74,13 +74,31 @@
  	 						$.post(baseUrl+'xtext-service/compile?resource='+editor.xtextServices.options.resourceId, data, function(result){
  								console.log("resource generated");
  								
+ 								
+ 								console.log("deploying resource");
+ 								
  		 						$.post(baseUrl+'xtext-service/deploy?resource='+editor.xtextServices.options.resourceId, data, function(result){
- 		 							console.log("deploying resource");
- 		 						}); 
- 							});
+ 		 							console.log("deployment finished");
+ 		 							console.log("checking if image gallery has updated!");
+ 		 							
+ 		 							ifHasChanged("html/lightbox.html", function(nModif, nVisit){
+										console.log("Image HTML HAS CHANGED!");
+										$("#gallery").load("html/lightbox.html", function(){
+											$.getScript("js/lightbox.js", function(){});
+										});	
+ 		 							}); 
+ 		 						
+ 		 							console.log("checking if video gallery has updated!");
+ 		 							ifHasChanged("html/videos.html", function(nModif, nVisit){
+ 		 								console.log("Video HTML HAS CHANGED!");
+	 		 							$("#playlist").load("html/videos.html", function(){
+											$.getScript("js/videos.js", function(){});
+										});
+ 		 							});
+ 								});
  						});
- 						
- 						e.preventDefault();
+ 							e.preventDefault();
+ 						});
  					});
  					
  					$('#land-button').bind("click", function(e){
@@ -95,22 +113,38 @@
  						e.preventDefault();
  					});
  					
- 					
-/*  					GalleryGenerator = function(){
+ 					/* $('#gallery-test').bind("click", function(e){
  						var data = {
- 	 							resource : editor.xtextServices.options.resourceId,
- 	 							fullText : editor.getValue()
- 	 						};
- 						
- 						setInterval(function(){	
- 	 	 					$.post(baseUrl+'xtext-service/dynamic-gallery?resource='+editor.xtextServices.options.resourceId, data, function(result){
- 	 	 					});	
- 	 					}, 1000);
- 					};
- 				
- 					GalleryGenerator(); */
-			});
+ 							resource : editor.xtextServices.options.resourceId,
+ 							fullText : editor.getValue()
+ 						};	
+ 						console.log(data);
+ 						console.log("Starting Test!");
+ 						$.post(baseUrl+'xtext-service/dynamicgallery?resource='+editor.xtextServices.options.resourceId, data, function(result){
+ 							console.log("Test Finished!");
+ 						}); 
+ 						e.preventDefault();
+ 					}); */			
+ 			});
 		});
+			
+			function getHeaderTime () {
+				  var nLastVisit = parseFloat(window.localStorage.getItem('lm_' + this.filepath));
+				  var nLastModif = Date.parse(this.getResponseHeader("Last-Modified"));
+				  if (isNaN(nLastVisit) || nLastModif > nLastVisit) {
+				    window.localStorage.setItem('lm_' + this.filepath, Date.now());
+				    isFinite(nLastVisit) && this.callback(nLastModif, nLastVisit);
+				  }
+				};
+				
+			function ifHasChanged(sURL, fCallback) {
+			  var oReq = new XMLHttpRequest();
+			  oReq.open("HEAD", sURL);
+			  oReq.callback = fCallback;
+			  oReq.filepath = sURL;
+			  oReq.onload = getHeaderTime;
+			  oReq.send();
+			}	
 	</script>
 </head>
 
@@ -176,7 +210,7 @@ document.getElementById("defaultTab").click();
 		$.getScript("js/lightbox.js", function(){});
 	});
 	
-	var element = document.getElementById('deploy-button');
+	/*var element = document.getElementById('deploy-button');
 	element.onclick = function () {
 		
 		var result_gallery = false;
@@ -211,10 +245,10 @@ document.getElementById("defaultTab").click();
 				});	
 		};
 		
-		exponentialBackoff(video_poll, 25, 1000);
+		exponentialBackoff(video_poll, 25, 1000); */
 		
 		/* Reference this code - NOT MINE DON'T FORGET - */
-		function getHeaderTime () {
+		/* function getHeaderTime () {
 			  var nLastVisit = parseFloat(window.localStorage.getItem('lm_' + this.filepath));
 			  var nLastModif = Date.parse(this.getResponseHeader("Last-Modified"));
 			  if (isNaN(nLastVisit) || nLastModif > nLastVisit) {
@@ -244,7 +278,7 @@ document.getElementById("defaultTab").click();
 		        }
 		    }
 		}
-	};
+	};*/
 </script>
 
 </body>

@@ -150,7 +150,7 @@ class ServerLauncher {
 				}
 			}			
 		}
-		executor.scheduleAtFixedRate(gallery_thread, 0, 5, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(gallery_thread, 0, 2, TimeUnit.SECONDS);
 	}
 
 	def static void video_listener()
@@ -205,7 +205,7 @@ class ServerLauncher {
 				}
 			}			
 		}
-		executor.scheduleAtFixedRate(video_thread, 0, 5, TimeUnit.SECONDS);
+		executor.scheduleAtFixedRate(video_thread, 0, 2, TimeUnit.SECONDS);
 	}
 
 	

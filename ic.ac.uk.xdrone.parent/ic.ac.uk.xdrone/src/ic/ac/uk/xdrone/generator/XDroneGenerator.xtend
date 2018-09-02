@@ -91,7 +91,7 @@ class XDroneGenerator extends AbstractGenerator {
 		{
 			cv.readImage(lastPng, function(err, im) 
 			{
-				im.resize(160, 90);
+				im.resize(120, 90);
 		
 				var detectedFace = face_cascade.detectMultiScale(im, function(err, faces) 
 				{
