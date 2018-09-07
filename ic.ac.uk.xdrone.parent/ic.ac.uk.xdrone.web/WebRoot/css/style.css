@@ -70,6 +70,13 @@ div.generate-code{
 	width: 50%;
 }
 
+#wifi{
+	position: absolute;
+	right: 10%;
+	height: 80%;
+}
+
+
 #xtext-editor {
 	display: block;
 	position: absolute;

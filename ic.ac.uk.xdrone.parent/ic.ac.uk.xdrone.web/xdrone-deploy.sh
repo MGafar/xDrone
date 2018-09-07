@@ -11,3 +11,5 @@ echo "Converter"
 ./xdrone-thumbnail.sh > /dev/null 2>&1
 
 echo "Thumbnails Generators"
+
+sleep 4

@@ -22,7 +22,7 @@ pngStream
   
   
 var video = client.getVideoStream();
-var output = fs.createWriteStream('WebRoot/videos/longpoll.h264');
+var output = fs.createWriteStream('WebRoot/videos/anothertest.h264');
 var parser = new PaVEParser();
 
 parser
@@ -149,7 +149,7 @@ var p = new Promise((resolve, reject) => {
 .then((res) => {
 		if (detected_face || feature_matched) return Promise.resolve();
 	return delay(200).then(function() {
-		fs.writeFile('WebRoot/images/longpoll.png', lastPng, (err) => {});
+		fs.writeFile('WebRoot/images/anothertest.png', lastPng, (err) => {});
 	})
 })
 

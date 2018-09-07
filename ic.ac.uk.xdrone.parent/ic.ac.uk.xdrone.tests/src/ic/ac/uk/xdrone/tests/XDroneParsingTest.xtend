@@ -24,15 +24,13 @@ class XDroneParsingTest {
 			xDrone Name
 			
 			
-			Autonomous_flight {
+			main_sequence() {
 				TAKEOFF
-				{
-					
-				}
+				
 				LAND
 			}
 			
-			global_conditional(FEATUREMATCH(landing2))
+			on_event(FEATUREMATCH(landing2))
 			{
 				ROTATELEFT(2000)
 				BACKWARD(1000)

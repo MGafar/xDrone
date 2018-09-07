@@ -28,7 +28,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection
 class ServerLauncher {
 	
 	static boolean shutdown = false;
-	static boolean drone_connection_alive=false;
+	static boolean reachable = true;
 
 	def static InetAddress getIPv4InetAddress() throws SocketException, UnknownHostException{
 		
@@ -212,6 +212,8 @@ class ServerLauncher {
 	def static void check_if_drone_connected()
 	{
 		val executor = Executors.newSingleThreadScheduledExecutor();
+		
+		
 			
 		var Runnable ping_drone = new Runnable() 
 		{
@@ -219,15 +221,28 @@ class ServerLauncher {
 				if(shutdown)
 					executor.shutdown()
 				
-				var reachable = InetAddress.getByName("192.168.1.1").isReachable(1000);
-			
-				if(!reachable)
+				var temp_reachable = InetAddress.getByName("192.168.1.1").isReachable(1000);
+				
+				if(temp_reachable != reachable)
 				{
-					drone_connection_alive = false;
-					//println('Drone is NOT reachable!');
-				} else
-				{
-					//println('Drone is reachable!');
+					
+					var PrintWriter writer
+					writer = new PrintWriter("WebRoot/html/drone_status.html", "UTF-8");
+					
+					if(temp_reachable)
+					{
+						writer.println("<img src=\"/app_images/wifi_connected.png\" id=\"wifi_connected\" style=\"position: absolute; top: 10%; right: 10%; height: 80%; z-index: 1\">")
+						writer.println("<div class=\"overconnected\" style=\"position: absolute; right: 4%; top: 50%; z-index: 2\">Connection <br> Established</div>")
+						//println("Drone is reachable")
+					} else
+					{
+						writer.println("<img src=\"/app_images/wifi_disconnected.png\" id=\"wifi_disconnected\" style=\"position: absolute; top: 10%; right: 15%; height: 80%; z-index: 1\">")
+						writer.println("<div class=\"overdisconnected\" style=\"position: absolute; right: 4%; top: 50%; z-index: 2\">No Connection <br> Detected</div>")
+						//println("Drone is NOT reachable")
+					}
+					
+					reachable = temp_reachable
+					writer.close();
 				}
 			}			
 		}
@@ -260,7 +275,7 @@ class ServerLauncher {
 
 	def static void main(String[] args) {
 			
-		val server = new Server(new InetSocketAddress(getIPv4InetAddress(), 8087))
+		val server = new Server(new InetSocketAddress("0.0.0.0", 8087))
 		
 		var ContextHandler main_context_handler = new WebAppContext => [
 			resourceBase = 'WebRoot'
@@ -288,7 +303,7 @@ class ServerLauncher {
 			convert_to_mp4();
 			generate_thumbnails();
 			video_listener();
-			//check_if_drone_connected();
+			check_if_drone_connected();
 			log.info('Server started ' + server.getURI + '...')
 			log.info(Inet4Address.getLocalHost().getHostAddress())
 

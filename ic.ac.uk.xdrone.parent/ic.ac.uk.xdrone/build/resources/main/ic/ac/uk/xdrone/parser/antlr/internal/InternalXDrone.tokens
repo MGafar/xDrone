@@ -2,7 +2,6 @@
 '()'=20
 ')'=18
 ';'=12
-'Autonomous_flight'=13
 'BACKWARD'=32
 'DOWN'=28
 'FACEDETECT'=22
@@ -19,7 +18,8 @@
 'UP'=27
 'USEDOWNWARDCAMERA'=21
 'WAIT'=35
-'global_conditional'=16
+'main_sequence()'=13
+'on_event'=16
 'xDrone'=11
 '{'=14
 '}'=15

@@ -14,18 +14,15 @@ Main :
   (downwardcamera+=DownwardCamera';'?)?
   (recordedflight+=RecordedFlight';'?)?
 
-  (commands+=Snapshot';'?)?
-
-  'Autonomous_flight'
+  'main_sequence()'
   '{'
+  (commands+=Snapshot';'?)?
   ((takeoff+=Takeoff';'?)
- 	 '{'
  		 ((commands+=SuperCommand) ';'?)*
- 	 '}'
   (land+=Land';'?))?
   '}'
   
-  ('global_conditional' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
+  ('on_event' '(' (featurematch+=FeatureMatch | facedetect+=FaceDetect) ')' 
   	'{'
   		(conditional_commands+=SuperCommand';'?)*
   	'}'
