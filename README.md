@@ -1,27 +1,27 @@
 # xDrone
 
-This code has the following dependencies:
+This code has the following dependencies: <br />
+ <br />
 
+Java jdk 1.7 <br />
+nodejs <br />
+github.com/felixge/node-ar-drone <br />
+OpenCV 2.4.9.1 <br />
+github.com/tbutcaru/node-opencv <br />
+ffmpeg <br />
+ <br />
+The program assumes the node modules are installed in the directory /usr/lib/node_modules <br />
+ <br />
+Ensure all of these modules and dependencies are working and tested or the project will not work as expected. <br />
+ <br />
 
-Java jdk 1.7
-nodejs
-github.com/felixge/node-ar-drone
-OpenCV 2.4.9.1
-github.com/tbutcaru/node-opencv
-ffmpeg
-
-The program assumes the node modules are installed in the directory /usr/lib/node_modules
-
-Ensure all of these modules and dependencies are working and tested or the project will not work as expected.
-
-
-To build the project:
-1.) Navigate to ic.ac.uk.parent
-2.) Execute (./gradlew build)
-
-To start the server:
-1.) Navigate to ic.ac.uk.parent
-2.) Execute (./gradlew jettyRun)
-3.) The web application can be accessed throgh the server's IP address in port 8087.
-	3.1) If just testing in same machine use the browser and type localhost:8087.
-4.) To stop the server, go on the terminal used to launch it and press "enter"
+To build the project: <br />
+1.) Navigate to ic.ac.uk.parent <br />
+2.) Execute (./gradlew build) <br />
+ <br />
+To start the server: <br />
+1.) Navigate to ic.ac.uk.parent <br />
+2.) Execute (./gradlew jettyRun) <br />
+3.) The web application can be accessed throgh the server's IP address in port 8087. <br />
+	3.1) If just testing in same machine use the browser and type localhost:8087. <br />
+4.) To stop the server, go on the terminal used to launch it and press "enter" <br />
