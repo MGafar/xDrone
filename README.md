@@ -1,5 +1,10 @@
 # xDrone
 
+This project was influenced by https://github.com/ProgrammableDrones/xTextLanguage. <br />
+The project is an attempt at making Drone programming through a Domain Specific Language <br />
+and user interface. It targets the Parrot AR Drone 2.0. If you are interested in this <br />
+and have any questions feel free to message me on LinkedIn (https://www.linkedin.com/in/muhamadgafar/). <br />
+
 This code has the following dependencies: <br />
  <br />
 
